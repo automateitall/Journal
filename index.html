@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,16 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="favicon.png">
     <title>Personal Journal</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=1770171628">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/compromise@latest/builds/compromise.min.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 </head>
 <body>
+
 <!-- Login Screen -->
 <div id="loginOverlay" class="login-overlay">
     <div class="login-card">
-        <h1>🌿 Personal Journal</h1>
+        <h1>Personal Journal</h1>
         <p>Enter your password to access your journal</p>
         <form class="login-form" onsubmit="handleLogin(event)">
             <input type="password" id="passwordInput" class="login-input" placeholder="Password" required>
@@ -36,406 +37,340 @@
 
 <!-- Main App -->
 <div id="mainApp" class="app-container">
-    <!--OG Sidebar -->
-    <div class="sidebar-wrapper">
-        <div class="sidebar">
-            <div class="user-info">
-                <div style="font-size: 0.8rem; opacity: 0.8;" id="currentDate"></div>
-                <div id="connectionStatus"></div>
-            </div>
-            <div class="streak-info">
-                <div class="streak-number" id="streakNumber">0</div>
-                <div class="streak-label">Day Streak</div>
-            </div>
-
-            <nav class="nav-menu">
-                <div class="nav-item" onclick="showSection('new-entry')">
-                    <span class="nav-icon">✏️</span> New Entry
-                    
-                </div>
-                <div class="nav-item active" onclick="showSection('entries')">
-                    <span class="nav-icon">📚</span> All Entries
-                    
-                </div>
-                <div class="nav-item" onclick="showSection('todos')">
-                    <span class="nav-icon">✅</span> To-Dos
-                    
-                </div>
-                <div class="nav-item" onclick="showSection('ai-reviews')">
-                    <span class="nav-icon">🤖</span> AI Reviews
-                    
-                </div>
-                <div class="nav-item" onclick="showSection('analytics')">
-                    <span class="nav-icon">📊</span> Analytics
-                    
-                </div>
-                <div class="nav-item" onclick="showSection('calendar')">
-                    <span class="nav-icon">📅</span> Calendar
-                    
-                </div>
-            </nav>
-
-            <div class="logout-section">
-                <button class="logout-btn" onclick="logout()">Logout</button>
+    <!-- SIDEBAR -->
+    <aside class="sidebar-column">
+        <div class="sidebar-header">
+            <h2 class="app-title">
+                <svg class="app-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                    <path d="M12 7v10"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+                Lighthouse
+            </h2>
+            <div class="user-meta">
+                <div class="current-date" id="currentDate"></div>
             </div>
         </div>
-        
-        <!-- categories -->
-        <!-- Journal Entries -->
-        
+
+        <nav class="sidebar-nav">
+            <button class="nav-item active" data-section="entries" onclick="navigateToSection('entries')">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"/>
+                    <path d="M9 7h6M9 11h6M9 15h4"/>
+                </svg>
+                <span>All Entries</span>
+            </button>
+            
+            <button class="nav-item" data-section="todos" onclick="navigateToSection('todos')">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 11l3 3L22 4"/>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                </svg>
+                <span>To-Dos</span>
+            </button>
+
+            <button class="nav-item" data-section="goals" onclick="navigateToSection('goals')">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <circle cx="12" cy="12" r="6"/>
+                    <circle cx="12" cy="12" r="2"/>
+                </svg>
+                <span>Goals</span>
+            </button>
+
+<!-- AI Reviews section removed (Fix #2) -->
+
+            <button class="nav-item" data-section="analytics" onclick="navigateToSection('analytics')">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 3v18h18"/>
+                    <path d="M18 17V9M13 17V5M8 17v-3"/>
+                </svg>
+                <span>Analytics</span>
+            </button>
+
+            <button class="nav-item" data-section="calendar" onclick="navigateToSection('calendar')">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                    <path d="M16 2v4M8 2v4M3 10h18"/>
+                </svg>
+                <span>Calendar</span>
+            </button>
+
+            <button class="nav-item-collapsible" onclick="toggleFoldersSection()">
+                <div style="display: flex; align-items: center; gap: var(--space-md); flex: 1;">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    <span>Folders</span>
+                </div>
+                <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"/>
+                </svg>
+            </button>
+        </nav>
+
+        <div class="folders-section collapsed" id="foldersSection">
+            <div class="folders-list" id="foldersList"></div>
+            <button class="btn-secondary" onclick="showCreateFolderModal()" style="width: 100%; margin-top: var(--space-sm);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12h14"/>
+                </svg>
+                New Folder
+            </button>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="mini-calendar" id="miniCalendar">
+                <div class="mini-calendar-header">
+                    <button class="mini-nav-btn" onclick="miniCalPrev()">‹</button>
+                    <span class="mini-month" id="miniMonth">Month</span>
+                    <button class="mini-nav-btn" onclick="miniCalNext()">›</button>
+                </div>
+                <div class="mini-calendar-grid" id="miniCalGrid"></div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MIDDLE COLUMN - Lists -->
+    <div class="entries-column" id="entriesColumn">
+        <div class="entries-header">
+            <div class="entries-title-row">
+                <h3 id="entriesColumnTitle">All Entries</h3>
+                <div class="entries-count" id="entriesCount">0</div>
+            </div>
+            <div class="entries-controls" id="entriesControls">
+                <input type="text" class="search-input" placeholder="Search..." id="searchInput" oninput="filterCurrentSection()">
+                <select class="filter-select" id="filterSelect" onchange="filterCurrentSection()"></select>
+            </div>
+        </div>
+        <div class="entries-list" id="entriesList"></div>
     </div>
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="toolbar">
-            <div class="toolbar-left">
-                <h2 id="sectionTitle">New Entry</h2>
-            </div>
-            <div class="toolbar-right">
-                <div class="weather-widget" id="weatherWidget">
-                    <span>🌤️</span>
-                    <span id="weatherInfo">Loading weather...</span>
-                </div>
-                <button class="btn-secondary" onclick="exportData()" title="Export Backup">💾 Backup</button>
-            </div>
+
+    <!-- DETAIL COLUMN -->
+    <div class="detail-column">
+        <div class="detail-header" id="detailHeader">
+            <button class="btn-new-entry" onclick="handleNewItemClick()" id="newItemBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12h14"/>
+                </svg>
+                <span id="newItemBtnText">New Entry</span>
+            </button>
         </div>
 
-        <div class="content-area">
-            <!-- New Entry Section -->
-            <div id="new-entry" class="content-section active">
-                <div class="content-card">
-                    <form onsubmit="saveEntry(event)">
-                        <div class="form-group">
-                            <input type="text" id="entryTitle" class="form-input" placeholder="What's on your mind?" required>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <select id="entryMood" class="form-select" required>
-                                    <option value="">Select mood</option>
-                                    <option value="😊 Happy">😊 Happy</option>
-                                    <option value="😌 Peaceful">😌 Peaceful</option>
-                                    <option value="🤔 Thoughtful">🤔 Thoughtful</option>
-                                    <option value="😔 Melancholic">😔 Melancholic</option>
-                                    <option value="😰 Anxious">😰 Anxious</option>
-                                    <option value="😴 Tired">😴 Tired</option>
-                                    <option value="🎉 Excited">🎉 Excited</option>
-                                    <option value="😤 Frustrated">😤 Frustrated</option>
-                                    <option value="❤️ Grateful">❤️ Grateful</option>
-                                    <option value="🌟 Inspired">🌟 Inspired</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <div style="display: flex; gap: 8px; align-items: center;">
-                                    <input type="text" id="entryLocation" class="form-input" placeholder="Where are you?">
-                                    <button type="button" class="btn-secondary" onclick="getCurrentLocation()">📍</button>
-                                </div>
-                            </div>
-                            
-
-                            <div class="form-group">
-                                <div class="tags-input" id="tagsInput">
-                                    <input type="text" class="tag-input" placeholder="Add tags..." onkeydown="handleTagInput(event)">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Voice Note</label>
-                                <div class="voice-controls">
-                                    <button type="button" class="voice-btn" id="voiceBtn" onclick="toggleVoiceRecording()">🎤</button>
-                                    <span class="voice-status" id="voiceStatus">Click to record</span>
-                                    <audio id="voicePlayback" controls style="display: none;"></audio>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div id="entryContentEditor" style="height: 300px; background: white;"></div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" id="featuredEntry"> Mark as featured
-                            </label>
-                        </div>
-
-                        <button type="submit" class="btn-primary" id="saveButton">
-                            <span id="saveButtonText">Save Entry</span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- All Entries Section -->
-            <div id="entries" class="content-section">
-                <!-- All Entries Section -->
-                <!-- Search Filter -->
-                <div class="content-card">
-                    <div class="entries-header">
-                        <div class="search-container">
-                            <div class="search-box">
-                                <span class="search-icon">🔍</span>
-                                <input type="text" id="entriesSearch" class="search-input" 
-                                placeholder="Search entries" 
-                                oninput="filterEntries()">
-                                <button class="search-clear" onclick="clearSearch()" title="Clear search">×</button>
-                            </div>
-                            <div class="filter-controls">
-                                <select id="moodFilter" class="filter-select" onchange="filterEntries()">
-                                    <option value="">All Moods</option>
-                                    <option value="😊 Happy">😊 Happy</option>
-                                    <option value="😌 Peaceful">😌 Peaceful</option>
-                                    <option value="🤔 Thoughtful">🤔 Thoughtful</option>
-                                    <option value="😔 Melancholic">😔 Melancholic</option>
-                                    <option value="😰 Anxious">😰 Anxious</option>
-                                    <option value="😴 Tired">😴 Tired</option>
-                                    <option value="🎉 Excited">🎉 Excited</option>
-                                    <option value="😤 Frustrated">😤 Frustrated</option>
-                                    <option value="❤️ Grateful">❤️ Grateful</option>
-                                    <option value="🌟 Inspired">🌟 Inspired</option>
-                                </select>
-
-                                <select id="dateFilter" class="filter-select" onchange="filterEntries()">
-                                    <option value="">All Dates</option>
-                                    <option value="today">Today</option>
-                                    <option value="week">This Week</option>
-                                    <option value="month">This Month</option>
-                                    <option value="year">This Year</option>
-                                </select>
-
-                                <select id="sortFilter" class="filter-select" onchange="filterEntries()">
-                                    <option value="newest">Newest First</option>
-                                    <option value="oldest">Oldest First</option>
-                                    <option value="title">Title A-Z</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="search-results-info" id="searchResultsInfo">
-                        <!-- Search results info will appear here -->
-                    </div>
-
-                    <div class="entry-list" id="entryList">
-                        <!-- Entries will be loaded here -->
-                    </div>
-                </div>
-            </div>
-            <!-- To-Do List Section -->
-            <div class="todo-container">
-                <div id="todos" class="content-section">
-                    <div class="content-card">
-                        <h3>My To-Do List</h3>
-                        <div style="margin: 16px 0;">
-                            <input type="text" id="newTodoInput" class="form-input" placeholder="Add a new task..." onkeydown="handleTodoInput(event)">
-                        </div>
-                        <div id="todoList">
-                            <!-- Todos will be loaded here -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- AI Reviews Section -->
-            <div id="ai-reviews" class="content-section">
-                <div class="content-card ai-card">
-                    <h3>🤖 AI-Powered Reviews</h3>
-                    <div style="margin-bottom: 16px;">
-                        <select id="reviewPeriod" class="form-select" style="width: auto;" onchange="generateAIReview()">
-                            <option value="week">Weekly Review</option>
-                            <option value="month">Monthly Review</option>
-                            <option value="year">Yearly Review</option>
+        <div class="detail-content" id="detailContent">
+            <!-- New Entry Form (Initial) -->
+            <div id="new-entry-form" class="entry-form">
+                <form onsubmit="saveEntry(event)">
+                    <input type="text" id="entryTitle" class="entry-title-input" placeholder="Entry Title" required>
+                    
+                    <div class="form-row-inline">
+                        <select id="entryMood" class="inline-select" required>
+                            <option value="">Mood</option>
+                            <option value="Happy">😊 Happy</option>
+                            <option value="Peaceful">😌 Peaceful</option>
+                            <option value="Thoughtful">🤔 Thoughtful</option>
+                            <option value="Melancholic">😔 Melancholic</option>
+                            <option value="Anxious">😰 Anxious</option>
+                            <option value="Tired">😴 Tired</option>
+                            <option value="Excited">🎉 Excited</option>
+                            <option value="Frustrated">😤 Frustrated</option>
+                            <option value="Grateful">🙏 Grateful</option>
+                            <option value="Inspired">✨ Inspired</option>
                         </select>
+                        <input type="text" id="entryLocation" class="inline-input" placeholder="Location">
+                        <div class="tags-input-inline">
+                            <div id="tagsDisplay" class="tags-display"></div>
+                            <input type="text" class="tag-input-small" placeholder="Tags..." onkeydown="handleTagInput(event)">
+                        </div>
                     </div>
-                    <div id="aiReviewContent">
-                        <p>Select a period and click generate to see your AI-powered insights.</p>
-                        <button class="btn-primary" onclick="generateAIReview()" style="margin-top: 12px;">Generate Review</button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Analytics Section -->
-            <div id="analytics" class="content-section">
-                <div class="stats-grid" id="statsGrid">
-                    <!-- Stats will be loaded here -->
-                </div>
-                <div class="content-card">  <h3>Mood Analytics</h3>
-                    <p>Track your emotional journey over time</p>
-
-                    <!-- Date Range Filter -->
-                    <div class="filter-controls" style="margin-bottom: 20px; padding: 15px; background: #f7fafc; border-radius: 8px;">
-                        <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
-                            <div>
-                                <label style="display: block; margin-bottom: 5px; font-weight: 600;">Start Date</label>
-                                <input type="date" id="startDate" class="form-input" style="min-width: 150px;">
-                            </div>
-                            <div>
-                                <label style="display: block; margin-bottom: 5px; font-weight: 600;">End Date</label>
-                                <input type="date" id="endDate" class="form-input" style="min-width: 150px;">
-                            </div>
-                            <div style="display: flex; gap: 10px; align-self: flex-end;">
-                                <button class="btn-primary" onclick="updateMoodChart()">Apply Filter</button>
-                                <button class="btn-secondary" onclick="resetDateFilter()">Show All</button>
+                    <div class="form-row-inline">
+                        <div class="dropdown-wrapper">
+                            <button type="button" class="dropdown-trigger" onclick="toggleGoalsDropdown(event)">
+                                <span id="goalsButtonText">🎯 Link Goals</span>
+                                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"/>
+                                </svg>
+                            </button>
+                            <div class="dropdown-panel" id="goalsDropdown">
+                                <div id="goalsLinkingList" class="checkbox-list"></div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Statistics Cards -->
-                    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
-                        <div class="stat-card">
-                            <div class="stat-number" id="avgMood">-</div>
-                            <div class="stat-label">Average Mood</div>
+                        <div class="dropdown-wrapper">
+                            <button type="button" class="dropdown-trigger" onclick="toggleTodosDropdown(event)">
+                                <span id="todosButtonText">✓ Link Todos</span>
+                                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"/>
+                                </svg>
+                            </button>
+                            <div class="dropdown-panel" id="todosDropdown">
+                                <div id="todosLinkingList" class="checkbox-list"></div>
+                            </div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="moodRange">-</div>
-                            <div class="stat-label">Mood Range</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="positiveDays">-</div>
-                            <div class="stat-label">Positive Days</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="trendDirection">-</div>
-                            <div class="stat-label">Trend</div>
-                        </div>
-                    </div>
-
-                    <!-- Mood Chart Container -->
-                    <div class="chart-container" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px;">
-                        <h3 style="margin-bottom: 15px;">Mood Timeline</h3>
-                        <div style="position: relative; height: 400px;">
-                            <canvas id="moodChart"></canvas>
+                        <div class="entry-link-section">
+                            <label class="entry-link-label">🔗 Link Entries</label>
+                            <input type="text" 
+                                   id="entryLinkInput" 
+                                   class="entry-link-search-input" 
+                                   placeholder="Search entries to link..." 
+                                   onkeyup="handleEntryLinkInput(event)"
+                                   onfocus="handleEntryLinkInput(event)"
+                                   autocomplete="off">
+                            <div id="entrySearchResults" class="entry-search-results-inline"></div>
+                            <div id="linkedEntriesDisplay" class="linked-entries-display"></div>
                         </div>
                     </div>
 
-                    <!-- Mood Legend -->
-                    <div class="mood-legend" style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; padding: 15px; background: #f7fafc; border-radius: 8px;">
-                        <div style="display: flex; align-items: center; gap: 5px;">
-                            <div style="width: 12px; height: 12px; background: #ef4444; border-radius: 50%;"></div>
-                            <span>Low Mood (1-4)</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 5px;">
-                            <div style="width: 12px; height: 12px; background: #f59e0b; border-radius: 50%;"></div>
-                            <span>Medium Mood (5-6)</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 5px;">
-                            <div style="width: 12px; height: 12px; background: #10b981; border-radius: 50%;"></div>
-                            <span>High Mood (7-10)</span>
-                        </div>
+                    <div class="editor-wrapper">
+                        <div id="editor"></div>
                     </div>
-                </div>
-                <!-- In your Analytics section -->
-<!-- Replace your current analytics mood dependency section with this -->
-<div class="content-card">
-    <h3>Mood Dependency</h3>
-    <p style="color:#6b7280;margin-bottom:20px;">Analyze how your mood changes by location, time, and day of the week.</p>
-    
-    <div style="display:grid;grid-template-columns:1fr;gap:30px;margin-top:20px;">
-        <!-- Location Chart -->
-        <div>
-            <h4 style="margin-bottom:15px;color:#374151;">📍 Mood by Location</h4>
-            <div style="position:relative;height:300px;border:2px dashed #e5e7eb;border-radius:8px;padding:10px;background:#fafafa;">
-                <canvas id="moodByLocationChart"></canvas>
-            </div>
-        </div>
-        
-        <!-- Time Chart -->
-        <div>
-            <h4 style="margin-bottom:15px;color:#374151;">⏰ Mood by Time of Day</h4>
-            <div style="position:relative;height:300px;border:2px dashed #e5e7eb;border-radius:8px;padding:10px;background:#fafafa;">
-                <canvas id="moodByTimeChart"></canvas>
-            </div>
-        </div>
-        
-        <!-- Day Chart -->
-        <div>
-            <h4 style="margin-bottom:15px;color:#374151;">📅 Mood by Day of Week</h4>
-            <div style="position:relative;height:300px;border:2px dashed #e5e7eb;border-radius:8px;padding:10px;background:#fafafa;">
-                <canvas id="moodByDayChart"></canvas>
-            </div>
-        </div>
 
-        <div>
-            <h4 style="margin-bottom:15px;color:#374151;">Mood by Month</h4>
-            <div style="position:relative;height:300px;border:2px dashed #e5e7eb;border-radius:8px;padding:10px;background:#fafafa;">
-                <canvas id="moodByMonthChart"></canvas>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Save Entry</button>
+                    </div>
+                </form>
             </div>
-        </div>
-    </div>
 
-
-
-
-<!-- Calendar Section -->
-<!-- Calendar Section -->
-<div id="calendar" class="content-section">
-    <div class="content-card">
-        <div class="calendar-header">
-            <h3 id="calendarMonth"></h3>
-            <div class="calendar-controls">
-                <button class="btn-calendar" onclick="previousMonth()" title="Previous month">
-                    <span>‹</span>
-                </button>
-                <button class="btn-calendar" onclick="nextMonth()" title="Next month">
-                    <span>›</span>
-                </button>
-                <button class="btn-calendar" onclick="goToToday()" title="Go to today">
-                    <span>📅</span>
-                </button>
-            </div>
-        </div>
-
-        <div class="calendar-legend">
-            <div class="legend-item">
-                <span class="legend-color streak-day"></span>
-                <span>Writing Streak</span>
-            </div>
-            <div class="legend-item">
-                <span class="legend-color task-day"></span>
-                <span>Has Tasks</span>
-            </div>
-            <div class="legend-item">
-                <span class="legend-color today"></span>
-                <span>Today</span>
-            </div>
-        </div>
-
-        <div class="calendar-weekdays">
-            <div>Sun</div>
-            <div>Mon</div>
-            <div>Tue</div>
-            <div>Wed</div>
-            <div>Thu</div>
-            <div>Fri</div>
-            <div>Sat</div>
-        </div>
-
-        <div id="calendarGrid" class="calendar-grid">
-            <!-- Calendar days will be generated here -->
-        </div>
-    </div>
-
-    <div class="content-card" style="margin-top: 20px;">
-        <h3 id="selectedDateTitle">Select a date to view details</h3>
-        <div id="calendarEntries" class="calendar-entries">
-            <div class="empty-state">
-                <div class="empty-state-icon">📅</div>
-                <p>Select a date to see journal entries and tasks</p>
-            </div>
+            <!-- Entry View (Hidden Initially) -->
+            <div id="entry-view" class="entry-view" style="display: none;"></div>
         </div>
     </div>
 </div>
-</div>
-</div>
-</div>
+
+<!-- MODALS -->
+
+<!-- Folder Modal -->
+<div id="folderModal" class="modal-overlay" onclick="closeFolderModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Create Smart Folder</h3>
+            <button class="modal-close" onclick="closeFolderModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Folder Name</label>
+                <input type="text" id="folderNameInput" class="form-input" placeholder="e.g., Travel, Work">
+            </div>
+            <div class="form-group">
+                <label>Folder Type</label>
+                <select id="folderTypeInput" class="form-input" onchange="toggleFolderRules()">
+                    <option value="smart">Smart Folder</option>
+                    <option value="manual">Manual Folder</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Color</label>
+                <div class="color-picker" id="colorPicker">
+                    <div class="color-option selected" data-color="#4299e1" style="background: #4299e1;"></div>
+                    <div class="color-option" data-color="#38b2ac" style="background: #38b2ac;"></div>
+                    <div class="color-option" data-color="#ed8936" style="background: #ed8936;"></div>
+                    <div class="color-option" data-color="#9f7aea" style="background: #9f7aea;"></div>
+                    <div class="color-option" data-color="#f687b3" style="background: #f687b3;"></div>
+                    <div class="color-option" data-color="#68d391" style="background: #68d391;"></div>
+                </div>
+            </div>
+            <div class="form-group" id="folderRulesGroup">
+                <label>Smart Rules</label>
+                <div class="rules-container" id="rulesContainer"></div>
+                <button type="button" class="btn-secondary" onclick="addRule()">Add Rule</button>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeFolderModal()">Cancel</button>
+            <button class="btn-primary" onclick="createFolder()">Create</button>
+        </div>
+    </div>
 </div>
 
-<!-- Toast Notification -->
+<!-- Goal Modal -->
+<div id="goalModal" class="modal-overlay" onclick="closeGoalModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3 id="goalModalTitle">Create New Goal</h3>
+            <button class="modal-close" onclick="closeGoalModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Goal Title</label>
+                <input type="text" id="goalTitle" class="form-input" placeholder="What do you want to achieve?" required>
+            </div>
+            <div class="form-group">
+                <label>Type</label>
+                <select id="goalType" class="form-input">
+                    <option value="habit">Habit Goal</option>
+                    <option value="project">Project Goal</option>
+                    <option value="milestone">Milestone Goal</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="goalDescription" class="form-input" rows="3"></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Target Value</label>
+                    <input type="number" id="goalTarget" class="form-input" value="100">
+                </div>
+                <div class="form-group">
+                    <label>Current Progress</label>
+                    <input type="number" id="goalCurrent" class="form-input" value="0">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Start Date</label>
+                    <input type="date" id="goalStartDate" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>Target Date</label>
+                    <input type="date" id="goalTargetDate" class="form-input">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeGoalModal()">Cancel</button>
+            <button class="btn-primary" onclick="saveGoal()">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- Linked Entries Modal -->
+<div id="linkedEntriesModal" class="modal-overlay" onclick="closeLinkedEntriesModal()">
+    <div class="modal-content linked-entries-modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3>🔗 Linked Entries</h3>
+            <button class="modal-close" onclick="closeLinkedEntriesModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div id="linkedEntriesModalList" class="linked-entries-modal-list"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Entry Detail Modal (for viewing linked entries) -->
+<div id="entryDetailModal" class="modal-overlay" onclick="closeEntryDetailModal()">
+    <div class="modal-content entry-detail-modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <button class="btn-icon-only" onclick="closeEntryDetailModal(); showLinkedEntriesModal();" title="Back to linked entries">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+            </button>
+            <h3 id="entryDetailModalTitle">Entry</h3>
+            <button class="modal-close" onclick="closeEntryDetailModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div id="entryDetailModalContent"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
 <div id="toast" class="toast"></div>
-<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
-<!-- Quill JS -->
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-<script src="script.js"></script>
-</script>
+<script src="script.js?v=1770171628"></script>
 </body>
 </html>
